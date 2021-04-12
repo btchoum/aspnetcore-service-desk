@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using ServiceDesk.Domain.Data;
+using ServiceDesk.Domain.Entities;
 using ServiceDesk.Domain.Tickets;
 using Xunit;
 
@@ -31,6 +32,14 @@ namespace ServiceDesk.IntegrationTests.Tickets
             var result = await handler.Handle(command, CancellationToken.None);
 
             result.TicketId.Should().NotBeEmpty();
+
+            var db = new ApplicationDbContext(contextOptions);
+            var ticket = await db.Tickets.FirstOrDefaultAsync();
+            ticket.Should().NotBeNull();
+            ticket.Should().BeEquivalentTo(command);
+            ticket.TicketStatus.Should().Be(TicketStatus.New);
+            ticket.DateSubmitted.Should().BeCloseTo(DateTime.UtcNow, 2000);
+            ticket.DateClosed.Should().BeNull();
         }
     }
 }

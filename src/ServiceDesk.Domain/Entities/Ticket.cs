@@ -10,7 +10,7 @@ namespace ServiceDesk.Domain.Entities
         public string SubmitterEmail { get; set; }
         public string SubmitterName { get; set; }
         public DateTime DateSubmitted { get; set; }
-        public DateTime DateClosed { get; set; }
+        public DateTime? DateClosed { get; set; }
         public TicketStatus TicketStatus { get; set; }
     }
 
