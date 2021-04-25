@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ServiceDesk.Domain\ServiceDesk.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
