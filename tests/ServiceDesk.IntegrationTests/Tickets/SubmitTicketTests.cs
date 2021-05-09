@@ -2,18 +2,16 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using ServiceDesk.Domain.Data;
 using ServiceDesk.Domain.Entities;
 using ServiceDesk.Domain.Tickets;
 using Xunit;
 
 namespace ServiceDesk.IntegrationTests.Tickets
 {
-    public class SubmitTicketHandlerTests
+    public class SubmitTicketTests : IntegrationTestBase
     {
         [Fact]
-        public async Task Create_is_successful()
+        public async Task Create_Details_RoundTrip()
         {
             var command = new SubmitTicketCommand
             {
@@ -23,23 +21,27 @@ namespace ServiceDesk.IntegrationTests.Tickets
                 SubmitterName = $"Test User {Guid.NewGuid()}"
             };
 
-            var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(nameof(Create_is_successful))
-                .Options;
+            var dbContext = MakeDbContext(nameof(Create_Details_RoundTrip));
             
-            var handler = new SubmitTicketHandler(new ApplicationDbContext(contextOptions));
+            var handler = new SubmitTicketHandler(dbContext);
 
             var result = await handler.Handle(command, CancellationToken.None);
 
             result.TicketId.Should().NotBeEmpty();
 
-            var db = new ApplicationDbContext(contextOptions);
-            var ticket = await db.Tickets.FirstOrDefaultAsync();
+            var detailHandler = new TicketDetailsHandler(dbContext);
+            var detailsRequest = new TicketDetailsRequest
+            {
+                Id = result.TicketId
+            };
+            var ticket = await detailHandler.Handle(detailsRequest, CancellationToken.None);
+            
             ticket.Should().NotBeNull();
             ticket.Should().BeEquivalentTo(command);
             ticket.Status.Should().Be(TicketStatus.New);
             ticket.DateSubmitted.Should().BeCloseTo(DateTime.UtcNow, 2000);
             ticket.DateClosed.Should().BeNull();
         }
+
     }
 }

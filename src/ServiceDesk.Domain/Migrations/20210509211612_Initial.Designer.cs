@@ -10,8 +10,8 @@ using ServiceDesk.Domain.Data;
 namespace ServiceDesk.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210509194406_Tickets")]
-    partial class Tickets
+    [Migration("20210509211612_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -221,6 +221,34 @@ namespace ServiceDesk.Domain.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ServiceDesk.Domain.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateEntered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubmitterId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("ServiceDesk.Domain.Entities.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -309,6 +337,20 @@ namespace ServiceDesk.Domain.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceDesk.Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("ServiceDesk.Domain.Entities.Ticket", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceDesk.Domain.Entities.Ticket", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

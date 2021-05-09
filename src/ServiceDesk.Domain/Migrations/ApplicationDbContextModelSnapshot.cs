@@ -228,7 +228,7 @@ namespace ServiceDesk.Domain.Migrations
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SubmitterEmail")
+                    b.Property<string>("SubmitterId")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");

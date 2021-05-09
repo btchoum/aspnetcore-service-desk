@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceDesk.Domain.Tickets;
 using ServiceDesk.Web.Models;
 
 namespace ServiceDesk.Web.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
         private readonly IMediator _mediator;
@@ -16,7 +18,6 @@ namespace ServiceDesk.Web.Controllers
         {
             _mediator = mediator;
         }
-
 
         [HttpGet("submit")]
         public IActionResult Submit()
@@ -27,18 +28,18 @@ namespace ServiceDesk.Web.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost("submit")]
         public async Task<IActionResult> Submit(
-            SubmitTicketCommand command, 
+            SubmitTicketCommand command,
             CancellationToken cancellationToken)
         {
 
             if (!ModelState.IsValid)
             {
                 return View();
-            }            
-            
+            }
+
             var result = await _mediator.Send(command, cancellationToken);
-            
-            return RedirectToAction(nameof(Details), new {id = result.TicketId});
+
+            return RedirectToAction(nameof(Details), new { id = result.TicketId });
         }
 
         [HttpGet("tickets/{id:guid}")]
@@ -52,7 +53,9 @@ namespace ServiceDesk.Web.Controllers
             var ticket = await _mediator.Send(request, cancellationToken);
 
             if (ticket == null)
+            {
                 return NotFound();
+            }
 
             var viewModel = new TicketDetailsViewModel(ticket);
 
@@ -66,11 +69,16 @@ namespace ServiceDesk.Web.Controllers
             TicketCustomerUpdateCommand command,
             CancellationToken cancellationToken)
         {
-            command.Id = id;
+            if (id != command.Id)
+            {
+                command.Id = id;
+            }
+
+            command.SubmitterId = User.Identity?.Name;
             
             await _mediator.Send(command, cancellationToken);
 
-            return RedirectToAction(nameof(Details), new {id = command.Id});
+            return RedirectToAction(nameof(Details), new { id = command.Id });
         }
     }
 }

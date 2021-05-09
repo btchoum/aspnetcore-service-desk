@@ -12,6 +12,7 @@ namespace ServiceDesk.Domain.Tickets
     {
         public string Comment { get; set; }
         public Guid Id { get; set; }
+        public string SubmitterId { get; set; }
     }
 
     public class TicketUpdateResult
@@ -29,20 +30,19 @@ namespace ServiceDesk.Domain.Tickets
         }
 
         public async Task<TicketUpdateResult> Handle(
-            TicketCustomerUpdateCommand request, 
+            TicketCustomerUpdateCommand command, 
             CancellationToken cancellationToken)
         {
 
             var ticket = await _db.Tickets
-                .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(t => t.Id == command.Id, cancellationToken);
             
             var comment = new Comment
             {
-                Text = request.Comment,
-                DateEntered = DateTime.Now,
+                Text = command.Comment,
+                DateEntered = DateTime.UtcNow,
                 TicketId = ticket.Id,
-                //TODO: add authenticated user here ...
-                SubmitterEmail = "test@example.com"
+                SubmitterId = command.SubmitterId
             };
 
             _db.Add(comment);

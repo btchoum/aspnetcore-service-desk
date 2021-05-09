@@ -15,7 +15,7 @@ namespace ServiceDesk.Domain.Entities
 
         [Required]
         [StringLength(200)]
-        public string SubmitterEmail { get; set; }
+        public string SubmitterId { get; set; }
 
         [Required]
         public DateTime DateEntered { get; set; }

@@ -28,6 +28,7 @@ namespace ServiceDesk.Domain.Tickets
             CancellationToken cancellationToken)
         {
             var ticket = await _db.Tickets
+                .Include(t => t.Comments)
                 .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
             return ticket;
