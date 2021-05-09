@@ -40,7 +40,7 @@ namespace ServiceDesk.Domain.Tickets
             var comment = new Comment
             {
                 Text = command.Comment,
-                DateEntered = DateTime.UtcNow,
+                DateEntered = DateTime.Now,
                 TicketId = ticket.Id,
                 SubmitterId = command.SubmitterId
             };
