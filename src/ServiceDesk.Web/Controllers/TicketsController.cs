@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ServiceDesk.Domain.Tickets;
+using ServiceDesk.Web.Models;
 
 namespace ServiceDesk.Web.Controllers
 {
@@ -15,12 +17,14 @@ namespace ServiceDesk.Web.Controllers
             _mediator = mediator;
         }
 
+
+        [HttpGet("submit")]
         public IActionResult Submit()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("submit")]
         public async Task<IActionResult> Submit(
             SubmitTicketCommand command, 
             CancellationToken cancellationToken)
@@ -31,9 +35,28 @@ namespace ServiceDesk.Web.Controllers
                 return View();
             }            
             
-            await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send(command, cancellationToken);
             
-            return View();
+            return RedirectToAction(nameof(Details), new {id = result.TicketId});
+        }
+
+
+        [HttpGet("tickets/{id:guid}")]
+        public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)
+        {
+            var request = new TicketDetailsRequest
+            {
+                Id = id
+            };
+
+            var ticket = await _mediator.Send(request, cancellationToken);
+
+            if (ticket == null)
+                return NotFound();
+
+            var viewModel = new TicketDetailsViewModel(ticket);
+
+            return View(viewModel);
         }
 
     }

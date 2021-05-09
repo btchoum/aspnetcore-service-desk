@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceDesk.Domain.Data;
 
-namespace ServiceDesk.Domain.Data.Migrations
+namespace ServiceDesk.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210509190636_Tickets")]
-    partial class Tickets
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,6 +235,9 @@ namespace ServiceDesk.Domain.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("SubmitterEmail")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -246,9 +247,6 @@ namespace ServiceDesk.Domain.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("TicketStatus")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()

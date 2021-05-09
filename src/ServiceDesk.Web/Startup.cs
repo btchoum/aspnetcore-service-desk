@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ServiceDesk.Domain.Data;
+using ServiceDesk.Domain.Tickets;
 
 namespace ServiceDesk.Web
 {
@@ -29,6 +31,9 @@ namespace ServiceDesk.Web
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+
+            services.AddMediatR(typeof(SubmitTicketHandler));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -37,7 +37,7 @@ namespace ServiceDesk.IntegrationTests.Tickets
             var ticket = await db.Tickets.FirstOrDefaultAsync();
             ticket.Should().NotBeNull();
             ticket.Should().BeEquivalentTo(command);
-            ticket.TicketStatus.Should().Be(TicketStatus.New);
+            ticket.Status.Should().Be(TicketStatus.New);
             ticket.DateSubmitted.Should().BeCloseTo(DateTime.UtcNow, 2000);
             ticket.DateClosed.Should().BeNull();
         }

@@ -41,7 +41,7 @@ namespace ServiceDesk.Domain.Tickets
                 Details = request.Details,
                 SubmitterEmail = request.SubmitterEmail,
                 SubmitterName = request.SubmitterName,
-                TicketStatus = TicketStatus.New
+                Status = TicketStatus.New
             };
 
             _db.Add(ticket);
