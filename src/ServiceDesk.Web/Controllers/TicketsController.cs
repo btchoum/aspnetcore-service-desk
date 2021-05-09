@@ -59,7 +59,7 @@ namespace ServiceDesk.Web.Controllers
             return View(viewModel);
         }
 
-
+        [ValidateAntiForgeryToken]
         [HttpPost("update")]
         public async Task<IActionResult> Update(
             Guid id,

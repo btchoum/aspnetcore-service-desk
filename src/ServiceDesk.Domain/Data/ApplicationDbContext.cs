@@ -12,5 +12,6 @@ namespace ServiceDesk.Domain.Data
         }
         
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }
