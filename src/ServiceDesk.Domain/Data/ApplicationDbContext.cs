@@ -10,6 +10,7 @@ namespace ServiceDesk.Domain.Data
             : base(options)
         {
         }
+        
         public DbSet<Ticket> Tickets { get; set; }
     }
 }
