@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ServiceDesk.Domain.Entities
@@ -26,6 +27,13 @@ namespace ServiceDesk.Domain.Entities
         public DateTime DateSubmitted { get; set; }
         public DateTime? DateClosed { get; set; }
         public TicketStatus Status { get; set; }
+
+        public List<Comment> Comments { get; set; }
+
+        public Ticket()
+        {
+            Comments = new List<Comment>();
+        }
     }
 
     public enum TicketStatus

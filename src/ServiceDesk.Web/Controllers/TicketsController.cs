@@ -24,6 +24,7 @@ namespace ServiceDesk.Web.Controllers
             return View();
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("submit")]
         public async Task<IActionResult> Submit(
             SubmitTicketCommand command, 
@@ -39,7 +40,6 @@ namespace ServiceDesk.Web.Controllers
             
             return RedirectToAction(nameof(Details), new {id = result.TicketId});
         }
-
 
         [HttpGet("tickets/{id:guid}")]
         public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)
@@ -59,5 +59,18 @@ namespace ServiceDesk.Web.Controllers
             return View(viewModel);
         }
 
+
+        [HttpPost("update")]
+        public async Task<IActionResult> Update(
+            Guid id,
+            TicketCustomerUpdateCommand command,
+            CancellationToken cancellationToken)
+        {
+            command.Id = id;
+            
+            await _mediator.Send(command, cancellationToken);
+
+            return RedirectToAction(nameof(Details), new {id = command.Id});
+        }
     }
 }
